@@ -1,10 +1,9 @@
 <script lang="ts">
 	import {Button} from '$lib/components/ui/button';
-	import * as Drawer from '$lib/components/ui/drawer';
 	import {Input} from '$lib/components/ui/input';
 	import {Label} from '$lib/components/ui/label';
 	import {pomodoroTimer, breakTimer} from '../store/stores.ts';
-	import Layout from './+layout.svelte';
+	import Settings from '../../icons/settings.svg';
 
 	export let timer: number;
 	let curTime = timer;
@@ -58,26 +57,9 @@
 </script>
 
 <div class="xl:[w-800px] grid rounded-2xl border-2 border-black px-10 pb-5 pt-10 md:w-96 lg:w-[500px]">
-	<Drawer.Root>
-		<Drawer.Trigger class="flex justify-end">|||</Drawer.Trigger>
-		<Drawer.Content>
-			<Drawer.Header>
-				<Drawer.Title>Settings</Drawer.Title>
-				THIS DONT WORK YET
-				<Drawer.Description>
-					<Label for="pomodoroTimer">Pomodoro Time</Label>
-					<Input bind:value={tmpPomodoroTimer} type="number" id="pomodoroTimer" />
-					<div class="pt-6" />
-					<Label for="breakTimer">Break Time</Label>
-					<Input bind:value={tmpBreakTimer} type="number" id="breakTimer" />
-				</Drawer.Description>
-			</Drawer.Header>
-			<Drawer.Footer>
-				<Drawer.Close on:click={setTime}>Submit</Drawer.Close>
-				<Drawer.Close>Cancel</Drawer.Close>
-			</Drawer.Footer>
-		</Drawer.Content>
-	</Drawer.Root>
+	<svg>
+		<use xlink:href={Settings} />
+	</svg>
 	<div class="grid place-items-center rounded-xl">
 		<div class="pt-6" />
 		<span class="text-8xl">{minutes}:{seconds > 9 ? seconds : `0${seconds}`}</span>
