@@ -1,21 +1,25 @@
 <script lang="ts">
 	import Clock from './clock.svelte';
 	import * as Tabs from '$lib/components/ui/tabs';
-	import {pomodoroTimer, breakTimer} from '../store/stores.ts';
+	import {pomodoroTimer, breakTimer} from '../store/stores';
+
+	const updateTimers = (pTimer: number, bTimer: number) => {
+		pomodoroTimer.set(pTimer);
+		breakTimer.set(bTimer);
+	};
 </script>
 
 <div class="mx-auto grid justify-center">
-	<Tabs.Root value="pomorodo" class="w-[400px]">
+	<Tabs.Root value="pomorodo">
 		<Tabs.List>
 			<Tabs.Trigger value="pomorodo">Pomodoro</Tabs.Trigger>
 			<Tabs.Trigger value="break">Break</Tabs.Trigger>
 		</Tabs.List>
 		<Tabs.Content value="pomorodo">
-			<Clock timer={$pomodoroTimer} />
+			<Clock time={$pomodoroTimer} {updateTimers} />
 		</Tabs.Content>
 		<Tabs.Content value="break">
-			<Clock timer={$breakTimer} />
+			<Clock time={$breakTimer} {updateTimers} />
 		</Tabs.Content>
 	</Tabs.Root>
-	<div>Tasks</div>
 </div>
