@@ -7,14 +7,14 @@
 	import Settings from '../../static/icons/settings.svelte';
 	import {pomodoroTimer, breakTimer} from '../store/stores';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
+	import {onMount} from 'svelte';
 
 	export let time: number;
 	export let updateTimers: (pTime: number, bTime: number) => void;
 
 	let curTime: number;
-
-	let intervalId: number;
 	let running: boolean = false;
+	let syncWorker: Worker | undefined = undefined;
 
 	// Ensure that curTime is up to date with changes made to time (pomodoro/break)
 	$: curTime = time;
@@ -38,33 +38,49 @@
 			? false
 			: true;
 
-	const playAudio = () => {
+	const playBell = () => {
 		let bellAudio = new Audio('../../bell.wav');
 		bellAudio.play();
 	};
 
+	const playClick = () => {
+		let jumpAudio = new Audio('../../click.wav');
+		jumpAudio.play();
+	};
+
 	const startInterval = () => {
+		playClick();
 		if (running) {
+			syncWorker?.postMessage({message: 'stop', play: {}});
 			running = false;
 			return;
 		}
 		running = true;
-		if (intervalId) return;
-		intervalId = setInterval(() => {
-			if (curTime > 0 && running) {
-				curTime -= 1;
-			} else if (curTime <= 0) {
-				running = false;
-				clearInterval(intervalId);
-				intervalId = 0;
-				playAudio();
-			}
-		}, 1000);
+
+		// Ensure web worker was loaded
+		if (syncWorker) {
+			//1. Mesage is post to worker first
+			syncWorker.postMessage({message: 'start', payload: {curTime: curTime}});
+
+			//2. then the worker fires a message back
+			syncWorker.onmessage = ({data}) => {
+				if (syncWorker) {
+					curTime = data.payload.curTime;
+					if (curTime === 0) {
+						playBell();
+						running = false;
+						syncWorker?.postMessage({message: 'stop', payload: {}});
+					}
+				}
+			};
+		}
 	};
 
-	const resetTime = () => {
+	const resetTime = async () => {
+		playClick();
 		running = false;
 		curTime = time;
+		syncWorker?.postMessage({message: 'stop', payload: {}});
 	};
 
 	const updateTimersOnClick = () => {
@@ -75,6 +91,14 @@
 			);
 		}
 	};
+
+	// Load the worker for timer on mount
+	const loadWorker = async () => {
+		const SyncWorker = await import('$lib/timer.worker.ts?worker');
+		syncWorker = new SyncWorker.default();
+	};
+
+	onMount(loadWorker);
 </script>
 
 <div class="xl:[w-800px] grid rounded-2xl border-2 border-black px-10 pb-5 pt-10 md:w-96 lg:w-[500px]">

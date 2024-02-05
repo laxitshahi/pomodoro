@@ -4,8 +4,12 @@
 	import {pomodoroTimer, breakTimer} from '../store/stores';
 
 	const updateTimers = (pTimer: number, bTimer: number) => {
-		pomodoroTimer.set(pTimer);
-		breakTimer.set(bTimer);
+		// This syntax can only be used in const
+		// Compiler handles the rest
+		$pomodoroTimer = pTimer;
+		$breakTimer = bTimer;
+		// pomodoroTimer.set(pTimer);
+		// breakTimer.set(bTimer);
 	};
 </script>
 
