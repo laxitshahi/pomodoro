@@ -1,5 +1,4 @@
 <script>
-	import {ModeWatcher, toggleMode} from 'mode-watcher';
 	import '../app.pcss';
 </script>
 
