@@ -101,7 +101,7 @@
 	onMount(loadWorker);
 </script>
 
-<div class="xl:[w-800px] grid rounded-2xl px-10 pb-5 pt-10 md:w-96 md:border-2 md:border-black lg:w-[500px]">
+<div class="grid rounded-2xl border-black px-10 pb-5 pt-10 shadow-black sm:w-[500px] sm:border-2 md:w-96">
 	<AlertDialog.Root>
 		<AlertDialog.Trigger class="ml-auto flex justify-end">
 			<Settings />
@@ -117,6 +117,8 @@
 							<Input id="pomodoroMinutes" type="number"
 								bind:value={newPomodoroMinutes}></Input>
 						</div>
+						<div class="px-2 sm:px-0" />
+						<div class="px-2" />
 						<div class="grid">
 							<Label for="pomodoroSeconds">Pomodoro Seconds</Label>
 							<div class="pb-2" />
@@ -134,6 +136,7 @@
 							<Input id="breakMinutes" type="number"
 								bind:value={newBreakMinutes}></Input>
 						</div>
+						<div class="px-2 sm:px-0" />
 						<div class="grid">
 							<Label for="breakSeconds">Break Seconds</Label>
 							<div class="pb-2" />
