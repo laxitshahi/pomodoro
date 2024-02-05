@@ -4,7 +4,7 @@
 	import * as Tooltip from '$lib/components/ui/tooltip';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
-	import Settings from '../../static/icons/settings.svelte';
+	import {Settings} from 'lucide-svelte';
 	import {pomodoroTimer, breakTimer} from '../store/stores';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
 	import {onMount} from 'svelte';
@@ -39,12 +39,12 @@
 			: true;
 
 	const playBell = () => {
-		let bellAudio = new Audio('../../bell.wav');
+		const bellAudio = new Audio('../../bell.wav');
 		bellAudio.play();
 	};
 
 	const playClick = () => {
-		let jumpAudio = new Audio('../../click.wav');
+		const jumpAudio: HTMLAudioElement = new Audio('../../click.mp3');
 		jumpAudio.play();
 	};
 
@@ -101,7 +101,7 @@
 	onMount(loadWorker);
 </script>
 
-<div class="grid rounded-2xl border-black px-10 pb-5 pt-10 shadow-black sm:w-[500px] sm:border-2 md:w-96">
+<div class="grid rounded-2xl border-black px-10 pb-5 pt-10 sm:w-[500px] sm:border-2 md:w-96">
 	<AlertDialog.Root>
 		<AlertDialog.Trigger class="ml-auto flex justify-end">
 			<Settings />

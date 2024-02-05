@@ -14,9 +14,6 @@ dependencies:
   lucide-svelte:
     specifier: ^0.321.0
     version: 0.321.0(svelte@4.2.7)
-  mode-watcher:
-    specifier: ^0.2.0
-    version: 0.2.0(svelte@4.2.7)
   svelte-sonner:
     specifier: ^0.3.11
     version: 0.3.11(svelte@4.2.7)
@@ -1734,14 +1731,6 @@ packages:
     dependencies:
       minimist: 1.2.8
     dev: true
-
-  /mode-watcher@0.2.0(svelte@4.2.7):
-    resolution: {integrity: sha512-NCo72EColWhNjMWXr+U9hjJS6ixCFEADfvj44XFLUWEkR/dsbJxnOX6bkxM+i1DWmP/nRhKI+rr2Z2nt+TZSGA==}
-    peerDependencies:
-      svelte: ^4.0.0
-    dependencies:
-      svelte: 4.2.7
-    dev: false
 
   /mri@1.2.0:
     resolution: {integrity: sha512-tzzskb3bG8LvYGFF/mDTpq3jpI6Q9wc3LEmBaghu+DdCssd1FakN7Bc0hVNmEyGq1bq3RgfkCb3cmQLpNPOroA==}
