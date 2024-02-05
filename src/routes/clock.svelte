@@ -101,7 +101,7 @@
 	onMount(loadWorker);
 </script>
 
-<div class="xl:[w-800px] grid rounded-2xl border-2 border-black px-10 pb-5 pt-10 md:w-96 lg:w-[500px]">
+<div class="xl:[w-800px] grid rounded-2xl px-10 pb-5 pt-10 md:w-96 md:border-2 md:border-black lg:w-[500px]">
 	<AlertDialog.Root>
 		<AlertDialog.Trigger class="ml-auto flex justify-end">
 			<Settings />
