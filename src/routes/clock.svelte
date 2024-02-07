@@ -11,6 +11,7 @@
 
 	export let time: number;
 	export let updateTimers: (pTime: number, bTime: number) => void;
+	export let updateTimerType: () => void;
 
 	let curTime: number;
 	let running: boolean = false;
@@ -37,7 +38,6 @@
 			inRangeInclusive(newBreakSeconds, 0, 59)
 			? false
 			: true;
-
 	const playBell = () => {
 		const bellAudio = new Audio('../../bell.wav');
 		bellAudio.play();
@@ -70,6 +70,8 @@
 						playBell();
 						running = false;
 						syncWorker?.postMessage({message: 'stop', payload: {}});
+						curTime = time;
+						updateTimerType();
 					}
 				}
 			};
@@ -140,7 +142,7 @@
 						<div class="grid">
 							<Label for="breakSeconds">Break Seconds</Label>
 							<div class="pb-2" />
-							<Input id="Break " type="number"
+							<Input id="Break" type="number"
 								bind:value={newBreakSeconds}></Input>
 						</div>
 					</div>

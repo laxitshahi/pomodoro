@@ -11,19 +11,29 @@
 		// pomodoroTimer.set(pTimer);
 		// breakTimer.set(bTimer);
 	};
+
+	let value = 'pomodoro';
+
+	const updateTimerType = () => {
+		if (value === 'pomodoro') {
+			value = 'break';
+		} else if (value === 'break') {
+			value = 'pomodoro';
+		}
+	};
 </script>
 
 <div class="mx-auto grid justify-center">
-	<Tabs.Root value="pomorodo">
+	<Tabs.Root bind:value>
 		<Tabs.List>
-			<Tabs.Trigger value="pomorodo">Pomodoro</Tabs.Trigger>
+			<Tabs.Trigger value="pomodoro">Pomodoro</Tabs.Trigger>
 			<Tabs.Trigger value="break">Break</Tabs.Trigger>
 		</Tabs.List>
-		<Tabs.Content value="pomorodo">
-			<Clock time={$pomodoroTimer} {updateTimers} />
+		<Tabs.Content value="pomodoro">
+			<Clock time={$pomodoroTimer} {updateTimers} {updateTimerType} />
 		</Tabs.Content>
 		<Tabs.Content value="break">
-			<Clock time={$breakTimer} {updateTimers} />
+			<Clock time={$breakTimer} {updateTimers} {updateTimerType} />
 		</Tabs.Content>
 	</Tabs.Root>
 </div>
