@@ -58,7 +58,6 @@
 			return;
 		}
 		running = true;
-		document.title = `${minutes}:${seconds > 9 ? seconds : '0' + seconds}`;
 		// Ensure web worker was loaded
 		if (syncWorker) {
 			//1. Mesage is post to worker first
@@ -72,7 +71,7 @@
 					// Therefore directly calculating the displayTime using curTime
 					document.title = `${Math.floor(curTime / 60)}:${
 						curTime % 60 > 9 ? curTime % 60 : '0' + (curTime % 60)
-					}`;
+					} - You got this!`;
 					if (curTime === 0) {
 						playBell();
 						running = false;
