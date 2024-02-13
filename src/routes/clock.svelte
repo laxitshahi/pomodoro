@@ -1,13 +1,11 @@
 <script lang="ts">
-	import {Button} from '$lib/components/ui/button';
-	import * as Dialog from '$lib/components/ui/dialog';
-	import * as Tooltip from '$lib/components/ui/tooltip';
+	import { Button } from '$lib/components/ui/button';
 	import Input from '$lib/components/ui/input/input.svelte';
 	import Label from '$lib/components/ui/label/label.svelte';
-	import {Settings} from 'lucide-svelte';
-	import {pomodoroTimer, breakTimer} from '../store/stores';
+	import { Settings } from 'lucide-svelte';
+	import { pomodoroTimer, breakTimer } from '../store/stores';
 	import * as AlertDialog from '$lib/components/ui/alert-dialog';
-	import {onMount} from 'svelte';
+	import { onMount } from 'svelte';
 
 	export let time: number;
 	export let updateTimers: (pTime: number, bTime: number) => void;
@@ -21,6 +19,10 @@
 	$: curTime = time;
 	$: minutes = Math.floor(curTime / 60);
 	$: seconds = curTime % 60;
+	// $: displayTime = `${minutes}:${seconds > 9 ? seconds : '0' + seconds}`;
+	$: displayTime = `${Math.floor(curTime / 60)}:${
+		curTime % 60 > 9 ? curTime % 60 : '0' + (curTime % 60)
+	}`;
 
 	// For new values in settings
 	$: newPomodoroMinutes = Math.floor($pomodoroTimer / 60);
@@ -33,9 +35,9 @@
 	};
 	$: editButtonIsDisabled =
 		inRangeInclusive(newPomodoroMinutes, 0, 99999) &&
-			inRangeInclusive(newBreakMinutes, 0, 99999) &&
-			inRangeInclusive(newPomodoroSeconds, 0, 59) &&
-			inRangeInclusive(newBreakSeconds, 0, 59)
+		inRangeInclusive(newBreakMinutes, 0, 99999) &&
+		inRangeInclusive(newPomodoroSeconds, 0, 59) &&
+		inRangeInclusive(newBreakSeconds, 0, 59)
 			? false
 			: true;
 	const playBell = () => {
@@ -51,27 +53,33 @@
 	const startInterval = () => {
 		playClick();
 		if (running) {
-			syncWorker?.postMessage({message: 'stop', play: {}});
+			syncWorker?.postMessage({ message: 'stop', play: {} });
 			running = false;
 			return;
 		}
 		running = true;
-
+		document.title = `${minutes}:${seconds > 9 ? seconds : '0' + seconds}`;
 		// Ensure web worker was loaded
 		if (syncWorker) {
 			//1. Mesage is post to worker first
-			syncWorker.postMessage({message: 'start', payload: {curTime: curTime}});
+			syncWorker.postMessage({ message: 'start', payload: { curTime: curTime } });
 
 			//2. then the worker fires a message back
-			syncWorker.onmessage = ({data}) => {
+			syncWorker.onmessage = ({ data }) => {
 				if (syncWorker) {
 					curTime = data.payload.curTime;
+					// Update is delayed by one tick (second)
+					// Therefore directly calculating the displayTime using curTime
+					document.title = `${Math.floor(curTime / 60)}:${
+						curTime % 60 > 9 ? curTime % 60 : '0' + (curTime % 60)
+					}`;
 					if (curTime === 0) {
 						playBell();
 						running = false;
-						syncWorker?.postMessage({message: 'stop', payload: {}});
+						syncWorker?.postMessage({ message: 'stop', payload: {} });
 						curTime = time;
 						updateTimerType();
+						document.title = ' Game time (´◡`) ';
 					}
 				}
 			};
@@ -82,7 +90,8 @@
 		playClick();
 		running = false;
 		curTime = time;
-		syncWorker?.postMessage({message: 'stop', payload: {}});
+		document.title = ' Game time (´◡`) ';
+		syncWorker?.postMessage({ message: 'stop', payload: {} });
 	};
 
 	const updateTimersOnClick = () => {
@@ -116,16 +125,14 @@
 						<div class="grid">
 							<Label for="pomodoroMinutes">Pomodoro Minutes</Label>
 							<div class="pb-2" />
-							<Input id="pomodoroMinutes" type="number"
-								bind:value={newPomodoroMinutes}></Input>
+							<Input id="pomodoroMinutes" type="number" bind:value={newPomodoroMinutes}></Input>
 						</div>
 						<div class="px-2 sm:px-0" />
 						<div class="px-2" />
 						<div class="grid">
 							<Label for="pomodoroSeconds">Pomodoro Seconds</Label>
 							<div class="pb-2" />
-							<Input id="pomodoroSeconds" type="number"
-								bind:value={newPomodoroSeconds}></Input>
+							<Input id="pomodoroSeconds" type="number" bind:value={newPomodoroSeconds}></Input>
 						</div>
 					</div>
 
@@ -135,29 +142,30 @@
 						<div class="grid">
 							<Label for="breakMinutes">Break Minutes</Label>
 							<div class="pb-2" />
-							<Input id="breakMinutes" type="number"
-								bind:value={newBreakMinutes}></Input>
+							<Input id="breakMinutes" type="number" bind:value={newBreakMinutes}></Input>
 						</div>
 						<div class="px-2 sm:px-0" />
 						<div class="grid">
 							<Label for="breakSeconds">Break Seconds</Label>
 							<div class="pb-2" />
-							<Input id="Break" type="number"
-								bind:value={newBreakSeconds}></Input>
+							<Input id="Break" type="number" bind:value={newBreakSeconds}></Input>
 						</div>
 					</div>
 				</AlertDialog.Description>
 			</AlertDialog.Header>
 			<AlertDialog.Footer>
-				<AlertDialog.Cancel disabled={editButtonIsDisabled ? true : false}
-					class="bg-black text-white" on:click={updateTimersOnClick}>Change
+				<AlertDialog.Cancel
+					disabled={editButtonIsDisabled ? true : false}
+					class="bg-black text-white"
+					on:click={updateTimersOnClick}
+					>Change
 				</AlertDialog.Cancel>
 			</AlertDialog.Footer>
 		</AlertDialog.Content>
 	</AlertDialog.Root>
 	<div class="grid place-items-center rounded-xl">
 		<div class="pt-6" />
-		<span class="text-8xl">{minutes}:{seconds > 9 ? seconds : `0${seconds}`}</span>
+		<span class="text-8xl">{displayTime}</span>
 	</div>
 	<div class="mb-16" />
 	<p class="flex justify-between">
